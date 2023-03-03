@@ -1,0 +1,229 @@
+[training@localhost ~]$ hive shell
+Hive history file=/tmp/training/hive_job_log_training_202303011924_310401245.txt
+hive> 
+hive> SHOW DATABASES;
+OK
+bda
+birla
+books
+data1
+default
+employee
+example
+mobilox
+test
+Time taken: 1.099 seconds
+
+hive> CREATE DATABASE COLLEGE;
+OK
+Time taken: 0.099 seconds
+hive> CREATE DATABASE IF NOT EXISTS COLLEGEDB;
+OK
+Time taken: 0.017 seconds
+
+hive> USE COLLEGE;
+OK
+Time taken: 0.034 seconds
+
+hive> SHOW TABLES;
+OK
+Time taken: 0.065 seconds
+
+hive> CREATE TABLE STUDENT(roll int,Name String, Tel int, City String)
+     row format delimited
+     fields terminated by ','
+     stored as textfile;
+OK
+Time taken: 0.079 seconds
+hive> CREATE TABLE STUDENT1(roll int,Name String, Tel int, City String);
+OK
+Time taken: 0.053 seconds
+
+
+hive> show tables;
+OK
+student
+student1
+Time taken: 0.022 seconds
+
+
+hive> LOAD DATA LOCAL INPATH '/home/training/studentinfo.txt' into table STUDENT
+    > ;
+Copying data from file:/home/training/studentinfo.txt
+Copying file: file:/home/training/studentinfo.txt
+Loading data to table college.student
+OK
+Time taken: 0.587 seconds
+hive> select * from student;
+OK
+
+Time taken: 0.587 seconds
+hive> select * from student;
+OK
+1       BHUSHAN 77777   THANE
+2       RAJESH  666665  MUMBAI
+3       RAMESH  55578   DADAR
+4       POOJA   88865   KALYAN
+5       ROHIT   65457   DOMBIVALI
+6       VIRAT   67800   KALYAN
+7       MANAS   786544  PUNE
+Time taken: 0.115 seconds
+
+hive> select * from student where tel>80000;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202303011919_0002, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202303011919_0002
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202303011919_0002
+2023-03-01 19:44:32,971 Stage-1 map = 0%,  reduce = 0%
+2023-03-01 19:44:33,976 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202303011919_0002
+OK
+2       RAJESH  666665  MUMBAI
+4       POOJA   88865   KALYAN
+7       MANAS   786544  PUNE
+Time taken: 2.227 seconds
+hive> 
+
+
+hive> select * from student group by city;   
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_202303011919_0004, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202303011919_0004
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202303011919_0004
+2023-03-01 19:47:59,596 Stage-1 map = 0%,  reduce = 0%
+2023-03-01 19:48:00,604 Stage-1 map = 100%,  reduce = 0%
+2023-03-01 19:48:06,937 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202303011919_0004
+OK
+DADAR
+DOMBIVALI
+KALYAN
+MUMBAI
+PUNE
+THANE
+Time taken: 9.532 seconds
+
+
+hive> select sum(tel) from student;                                 
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_202303011919_0005, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202303011919_0005
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202303011919_0005
+2023-03-01 19:52:32,425 Stage-1 map = 0%,  reduce = 0%
+2023-03-01 19:52:33,429 Stage-1 map = 100%,  reduce = 0%
+2023-03-01 19:52:40,472 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202303011919_0005
+OK
+1808686
+Time taken: 10.404 seconds
+
+
+
+
+ve> ALTER TABLE student RENAME TO stu; 
+OK
+Time taken: 0.052 seconds
+hive> show tables;
+OK
+stu
+student1
+Time taken: 0.021 seconds
+
+
+
+ hive> ALTER TABLE stu ADD COLUMNS (Dept String);
+OK
+Time taken: 0.043 seconds
+hive> describe stu;
+OK
+roll    int
+name    string
+tel     int
+city    string
+dept    string
+Time taken: 0.029 second
+
+
+
+
+ALTER TABLE stu REPLACE COLUMNS(
+roll int rollno int);
+name String Firstname String);
+
+ALTER TABLE student REPLACE COLUMNS (
+roll String
+Name String
+Tel String
+City String
+);
+
+hive> ALTER TABLE student CHANGE Name FirstName String;
+OK
+Time taken: 0.034 seconds
+hive> select *from student;                            
+OK
+1       BHUSHAN 77777   THANE
+2       RAJESH  666665  MUMBAI
+3       RAMESH  55578   DADAR
+4       POOJA   88865   KALYAN
+5       ROHIT   65457   DOMBIVALI
+6       VIRAT   67800   KALYAN
+7       MANAS   786544  PUNE
+Time taken: 0.044 seconds
+hive> desc student;
+OK
+roll    int
+firstname       string
+tel     int
+city    string
+Time taken: 0.028 seconds
+
+
+hive> drop table stu;     
+OK
+Time taken: 0.041 seconds
+hive> show tables    
+    > ;
+OK
+student
+Time taken: 0.017 seconds
+
+hive> show tables;
+OK
+student
+Time taken: 0.02 seconds
+hive> drop table student;
+OK
+Time taken: 0.043 seconds
+hive> drop database college;
+OK
+Time taken: 0.061 seconds
+
+hive> show databases;
+OK
+bda
+birla
+books
+collegedb
+data1
+default
+employee
+example
+mobilox
+test
+Time taken: 0.019 seconds

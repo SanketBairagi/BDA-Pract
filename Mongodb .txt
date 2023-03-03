@@ -1,0 +1,24 @@
+db.book.insert([
+{"Name":"Sachin","Age":32,"City":"Mumbai"},{"Name":"Raj","Age":34,"Books":["C","C++","Java"]},{"Address":"Kalyan","Gender":"Male","Rollno":3}])
+db.book.find({"Age":{$lt:34}}).pretty()
+db.book.find({"Name":"Raj"}).pretty()
+ db.book.find({"Age":{$gt:32}}).pretty()
+db.book.find({$and:[{"Age":32},{"City":"Mumbai"}]}).pretty()
+db.book.find({$and:[{"Age":34},{"City":"Mumbai"}]}).pretty()
+db.book.find({$or:[{"Age":34},{"City":"Mumbai"}]}).pretty()
+db.book.update({"Name":"Raj"},{$set:{"Name":"Virat"}})
+> show collections
+Student
+book
+> db.book.drop()
+true
+> show collections
+Student
+> db.dropDatabase()
+{ "dropped" : "bda", "ok" : 1 }
+> show dbs
+admin       0.000GB
+config      0.000GB
+local       0.000GB
+msc         0.000GB
+mydatabase  0.000GB
