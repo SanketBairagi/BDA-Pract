@@ -1,0 +1,154 @@
+[training@localhost ~]$ nano piginput.txt
+[training@localhost ~]$ cat piginput.txt 
+1,Bhushan,Manager,Mumbai,25000
+2,Rohit,Developer,Kalyan,35000
+3,Ramesh,Sales,Thane,28000
+4,Pooja,Service,Dadar,34000
+5,Sonali,Professor,Thane,29000
+6,Rakesh,Sales,Kalyan,31000
+7,Virat,Service,Mumbai,25300
+8,Rohit,Manager,Thane,32450
+[training@localhost ~]$ hadoop fs -put piginput.txt hadoop/
+
+grunt> R= load '/user/training/hadoop/piginput.txt' using PigStorage(',') as (Empid:chararray,Name:chararray,Designation:chararray,City:chararray,Salary:int);
+
+grunt> dump R
+Total input paths to process : 1
+(1,Bhushan,Manager,Mumbai,25000)
+(2,Rohit,Developer,Kalyan,35000)
+(3,Ramesh,Sales,Thane,28000)
+(4,Pooja,Service,Dadar,34000)
+(5,Sonali,Professor,Thane,29000)
+(6,Rakesh,Sales,Kalyan,31000)
+(7,Virat,Service,Mumbai,25300)
+(8,Rohit,Manager,Thane,32450)
+
+grunt> describe R;
+R: {Empid: chararray,Name: chararray,Designation: chararray,City: chararray,Salary: int}
+
+grunt> illustrate R;
+grunt> explain R;
+
+grunt> R1 = GROUP R by City;
+grunt> dump R1;
+
+Total input paths to process : 1
+(Dadar,{(4,Pooja,Service,Dadar,34000)})
+(Thane,{(3,Ramesh,Sales,Thane,28000),(5,Sonali,Professor,Thane,29000),(8,Rohit,Manager,Thane,32450)})
+(Kalyan,{(2,Rohit,Developer,Kalyan,35000),(6,Rakesh,Sales,Kalyan,31000)})
+(Mumbai,{(1,Bhushan,Manager,Mumbai,25000),(7,Virat,Service,Mumbai,25300)})
+
+
+grunt> R3 = foreach R generate Name,Salary; 
+grunt> dump R3;
+
+Total input paths to process : 1
+(Bhushan,25000)
+(Rohit,35000)
+(Ramesh,28000)
+(Pooja,34000)
+(Sonali,29000)
+(Rakesh,31000)
+(Virat,25300)
+(Rohit,32450)
+
+grunt>  R2 = filter R by Salary>=30000;
+grunt> dump R2;
+
+Total input paths to process : 1
+(2,Rohit,Developer,Kalyan,35000)
+(4,Pooja,Service,Dadar,34000)
+(6,Rakesh,Sales,Kalyan,31000)
+(8,Rohit,Manager,Thane,32450)
+
+grunt> R3 = order R by Salary DESC;
+grunt> dump R3;
+
+ Total input paths to process : 1
+(2,Rohit,Developer,Kalyan,35000)
+(4,Pooja,Service,Dadar,34000)
+(8,Rohit,Manager,Thane,32450)
+(6,Rakesh,Sales,Kalyan,31000)
+(5,Sonali,Professor,Thane,29000)
+(3,Ramesh,Sales,Thane,28000)
+(7,Virat,Service,Mumbai,25300)
+(1,Bhushan,Manager,Mumbai,25000)
+
+
+grunt> R11 = load '/user/training/hadoop/piginput2.txt' using PigStorage(',') as (Empid:chararray,Gender:chararray);
+grunt> dump R11;
+
+
+Total input paths to process : 1
+(1,Male)
+(2,Male)
+(3,Male)
+(4,Female)
+(5,Female)
+(6,Male)
+(7,Male)
+(8,Male)
+
+grunt> R6 =  Join R by Empid, R11 by Empid;
+grunt> dump R6;
+
+Total input paths to process : 1
+(1,Bhushan,Manager,Mumbai,25000,1,Male)
+(2,Rohit,Developer,Kalyan,35000,2,Male)
+(3,Ramesh,Sales,Thane,28000,3,Male)
+(4,Pooja,Service,Dadar,34000,4,Female)
+(5,Sonali,Professor,Thane,29000,5,Female)
+(6,Rakesh,Sales,Kalyan,31000,6,Male)
+(7,Virat,Service,Mumbai,25300,7,Male)
+(8,Rohit,Manager,Thane,32450,8,Male)
+
+grunt> R7 = Join R11 by Empid LEFT OUTER, R by Empid;
+grunt> dump R7;
+
+Total input paths to process : 1
+(1,Male,1,Bhushan,Manager,Mumbai,25000)
+(2,Male,2,Rohit,Developer,Kalyan,35000)
+(3,Male,3,Ramesh,Sales,Thane,28000)
+(4,Female,4,Pooja,Service,Dadar,34000)
+(5,Female,5,Sonali,Professor,Thane,29000)
+(6,Male,6,Rakesh,Sales,Kalyan,31000)
+(7,Male,7,Virat,Service,Mumbai,25300)
+(8,Male,8,Rohit,Manager,Thane,32450)
+
+grunt> R7 = Join R11 by Empid RIGHT OUTER, R by Empid;
+grunt> dump R7;
+
+Total input paths to process : 1
+(1,Male,1,Bhushan,Manager,Mumbai,25000)
+(2,Male,2,Rohit,Developer,Kalyan,35000)
+(3,Male,3,Ramesh,Sales,Thane,28000)
+(4,Female,4,Pooja,Service,Dadar,34000)
+(5,Female,5,Sonali,Professor,Thane,29000)
+(6,Male,6,Rakesh,Sales,Kalyan,31000)
+(7,Male,7,Virat,Service,Mumbai,25300)
+(8,Male,8,Rohit,Manager,Thane,32450)
+
+grunt> R12 = FOREACH R10 generate R::Empid as Empid, R::Name as Name,R::Designation as Designation, R::City as City,R::Salary as Salary, R11::Gender as Gender;
+grunt> dump R12;
+ Total input paths to process : 1
+(1,Bhushan,Male)
+(2,Rohit,Male)
+(3,Ramesh,Male)
+(4,Pooja,Female)
+(5,Sonali,Female)
+(6,Rakesh,Male)
+(7,Virat,Male)
+(8,Rohit,Male)
+
+grunt> R10 = Join R by Empid, R11 by Empid;
+grunt> R11 = FOREACH R10 generate R::Empid as Empid, R::Name as Name,R11::Gender as Gender;
+
+Total input paths to process : 1
+(1,Bhushan,Manager,Mumbai,25000,Male)
+(2,Rohit,Developer,Kalyan,35000,Male)
+(3,Ramesh,Sales,Thane,28000,Male)
+(4,Pooja,Service,Dadar,34000,Female)
+(5,Sonali,Professor,Thane,29000,Female)
+(6,Rakesh,Sales,Kalyan,31000,Male)
+(7,Virat,Service,Mumbai,25300,Male)
+(8,Rohit,Manager,Thane,32450,Male)
