@@ -1,0 +1,352 @@
+Create Operation
+
+$ hive
+
+hive> show databases;
+OK
+bda
+books
+data1
+default
+employee
+example
+mobilox
+test
+
+
+hive> create database student;
+OK
+
+hive> use student;
+OK
+
+hive> hive> create table std(Name String,Age int,City String,Gender String,percent Int)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' ; 
+
+
+
+hive> desc std;
+OK
+name    string
+age     int
+city    string
+gender  string
+percent int
+
+
+--------------------------------------------------------------------------------------
+
+Sanket,25,Mumbai,Male,98
+Mayur,23,Thane,Male,88
+Snehal,20,Pune,Female,75
+Pinki,18,Mumbai,Female,96
+Chinki,16,Pune,Female,66
+Pravin,25,Mumbai,Male,45
+Manish,23,Surat,Male,85
+Suresh,26,Thane,Male,99
+Ramesh,22,Pune,Male,55
+Yash,21,Nashik,Male,58
+Kirti,23,Thane,Female,35
+
+--------------------------------------------------------------------------------------
+
+
+hive> load data local inpath '/home/training/Desktop/hiveinput.txt' overwrite into table std;
+Copying data from file:/home/training/Desktop/hiveinput.txt
+Copying file: file:/home/training/Desktop/hiveinput.txt
+Loading data to table student.std
+Deleted hdfs://localhost/user/hive/warehouse/student.db/std
+OK
+
+
+Read Operation
+(where(),=,<,>,<=,>=,sort,and)
+
+hive> select * from std;
+OK
+Sanket  25      Mumbai  Male    98
+Mayur   23      Thane   Male    88
+Snehal  20      Pune    Female  75
+Pinki   18      Mumbai  Female  96
+Chinki  16      Pune    Female  66
+Pravin  25      Mumbai  Male    45
+Manish  23      Surat   Male    85
+Suresh  26      Thane   Male    99
+Ramesh  22      Pune    Male    55
+Yash    21      Nashik  Male    58
+Kirti   23      Thane   Female  35
+
+
+hive> select city from std;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0006, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0006
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0006
+2023-05-26 23:54:11,697 Stage-1 map = 0%,  reduce = 0%
+2023-05-26 23:54:12,713 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0006
+OK
+Mumbai
+Thane
+Pune
+Mumbai
+Pune
+Mumbai
+Surat
+Thane
+Pune
+Nashik
+Thane
+
+
+
+hive> select Name from std where age>22;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0007, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0007
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0007
+2023-05-26 23:55:20,888 Stage-1 map = 0%,  reduce = 0%
+2023-05-26 23:55:21,897 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0007
+OK
+Sanket
+Mayur
+Pravin
+Manish
+Suresh
+Kirti
+
+
+
+hive> Select * from std where percent>80;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0008, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0008
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0008
+2023-05-26 23:57:28,501 Stage-1 map = 0%,  reduce = 0%
+2023-05-26 23:57:29,507 Stage-1 map = 100%,  reduce = 0%
+2023-05-26 23:57:30,513 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0008
+OK
+Sanket  25      Mumbai  Male    98
+Mayur   23      Thane   Male    88
+Pinki   18      Mumbai  Female  96
+Manish  23      Surat   Male    85
+Suresh  26      Thane   Male    99
+
+
+hive> Select * from std where percent>=96;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0009, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0009
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0009
+2023-05-26 23:58:29,625 Stage-1 map = 0%,  reduce = 0%
+2023-05-26 23:58:30,632 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0009
+OK
+Sanket  25      Mumbai  Male    98
+Pinki   18      Mumbai  Female  96
+Suresh  26      Thane   Male    99
+
+
+
+hive> Select * from std where age<=21;    
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0010, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0010
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0010
+2023-05-26 23:59:11,788 Stage-1 map = 100%,  reduce = 0%
+2023-05-26 23:59:12,794 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0010
+OK
+Snehal  20      Pune    Female  75
+Pinki   18      Mumbai  Female  96
+Chinki  16      Pune    Female  66
+Yash    21      Nashik  Male    58
+
+
+hive> Select * from std where age<20; 
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0011, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0011
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0011
+2023-05-26 23:59:57,811 Stage-1 map = 0%,  reduce = 0%
+2023-05-26 23:59:58,821 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0011
+OK
+Pinki   18      Mumbai  Female  96
+Chinki  16      Pune    Female  66
+
+
+
+
+hive> SELECT * from std SORT BY percent DESC;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_202305262225_0012, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0012
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0012
+2023-05-27 00:02:03,013 Stage-1 map = 0%,  reduce = 0%
+2023-05-27 00:02:05,023 Stage-1 map = 100%,  reduce = 0%
+2023-05-27 00:02:12,084 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0012
+OK
+Suresh  26      Thane   Male    99
+Sanket  25      Mumbai  Male    98
+Pinki   18      Mumbai  Female  96
+Mayur   23      Thane   Male    88
+Manish  23      Surat   Male    85
+Snehal  20      Pune    Female  75
+Chinki  16      Pune    Female  66
+Yash    21      Nashik  Male    58
+Ramesh  22      Pune    Male    55
+Pravin  25      Mumbai  Male    45
+Kirti   23      Thane   Female  35
+
+
+hive> SELECT * from std SORT BY age;         
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapred.reduce.tasks=<number>
+Starting Job = job_202305262225_0013, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0013
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0013
+2023-05-27 00:03:38,110 Stage-1 map = 100%,  reduce = 0%
+2023-05-27 00:03:45,150 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0013
+OK
+Chinki  16      Pune    Female  66
+Pinki   18      Mumbai  Female  96
+Snehal  20      Pune    Female  75
+Yash    21      Nashik  Male    58
+Ramesh  22      Pune    Male    55
+Mayur   23      Thane   Male    88
+Manish  23      Surat   Male    85
+Kirti   23      Thane   Female  35
+Sanket  25      Mumbai  Male    98
+Pravin  25      Mumbai  Male    45
+Suresh  26      Thane   Male    99
+
+
+hive> Select * from std where age=23;
+Total MapReduce jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_202305262225_0015, Tracking URL = http://localhost:50030/jobdetails.jsp?jobid=job_202305262225_0015
+Kill Command = /usr/lib/hadoop/bin/hadoop job  -Dmapred.job.tracker=localhost:8021 -kill job_202305262225_0015
+2023-05-27 00:04:45,296 Stage-1 map = 0%,  reduce = 0%
+2023-05-27 00:04:46,304 Stage-1 map = 100%,  reduce = 0%
+2023-05-27 00:04:47,313 Stage-1 map = 100%,  reduce = 100%
+Ended Job = job_202305262225_0015
+OK
+Mayur   23      Thane   Male    88
+Manish  23      Surat   Male    85
+Kirti   23      Thane   Female  35
+
+
+
+
+Update Operations
+
+hive> alter table std RENAME TO clg;        
+OK
+
+
+
+hive> select * from clg;             
+OK
+Sanket  25      Mumbai  Male    98
+Mayur   23      Thane   Male    88
+Snehal  20      Pune    Female  75
+Pinki   18      Mumbai  Female  96
+Chinki  16      Pune    Female  66
+Pravin  25      Mumbai  Male    45
+Manish  23      Surat   Male    85
+Suresh  26      Thane   Male    99
+Ramesh  22      Pune    Male    55
+Yash    21      Nashik  Male    58
+Kirti   23      Thane   Female  35
+
+
+
+hive> alter table clg CHANGE percent marks int;        
+OK
+
+
+hive> desc clg;                                
+OK
+name    string
+age     int
+city    string
+gender  string
+marks   int
+
+
+hive> alter table clg REPLACE COLUMNS(std_name string ,std_age int,std_city string,gender string,pre_marks int);   
+OK
+
+
+hive> desc clg;                                                                                                 
+OK
+std_name        string
+std_age int
+std_city        string
+gender  string
+pre_marks       int
+
+
+
+hive> drop table clg;
+OK
+
+
+hive> drop database student;
+OK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
