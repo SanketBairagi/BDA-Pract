@@ -1,0 +1,256 @@
+Create Operations (use ,create , insert)
+
+
+cqlsh>  CREATE KEYSPACE Birla WITH replication ={'class':'SimpleStrategy','replication_factor' : 3};
+
+cqlsh> use birla;
+
+CREATE TABLE std( std_id int PRIMARY KEY, std_name text, std_city text, std_percent varint, std_phone varint);
+
+cqlsh:birla> desc std;
+
+CREATE TABLE birla.std (
+    std_id int PRIMARY KEY,
+    std_city text,
+    std_name text,
+    std_percent varint,
+    std_phone varint
+) WITH bloom_filter_fp_chance = 0.01
+
+
+cqlsh:birla> select * from std;
+
+ std_id | std_city | std_name | std_percent | std_phone
+--------+----------+----------+-------------+-----------
+
+
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(1,'ram', 'Hyderabad', 88, 77787857856);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(2,'Sanket', 'Thane', 98, 9892857856);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(3,'Mayur', 'Thane', 45, 8569857856);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(4,'Snehal', 'Mumbai',78, 8795857856);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(5,'Kirti', 'Mumbai',43,  4658585785);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(6,'Pinki', 'Pune',56, 7578585785);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(7,'Raju', 'Kalyan',99, 963585785);
+cqlsh:birla> INSERT INTO std (std_id, std_name, std_city,std_percent, std_phone) VALUES(8,'Monu', 'Surat',81, 653585785);
+
+
+cqlsh:birla> select * from std;
+
+ std_id | std_city  | std_name | std_percent | std_phone
+--------+-----------+----------+-------------+-------------
+      5 |    Mumbai |    Kirti |          43 |  4658585785
+      1 | Hyderabad |      ram |          88 | 77787857856
+      8 |     Surat |     Monu |          81 |   653585785
+      2 |     Thane |   Sanket |          98 |  9892857856
+      4 |    Mumbai |   Snehal |          78 |  8795857856
+      7 |    Kalyan |     Raju |          99 |   963585785
+      6 |      Pune |    Pinki |          56 |  7578585785
+      3 |     Thane |    Mayur |          45 |  8569857856
+
+
+_________________________________________________________________________________________
+
+
+Read Operations
+(sect,=,<,>,<=,>=,sort,and)
+
+
+cqlsh:birla> select std_name from std;
+
+ std_name
+----------
+    Kirti
+      ram
+     Monu
+   Sanket
+   Snehal
+     Raju
+    Pinki
+    Mayur
+
+
+cqlsh:birla> select std_name,std_percent from std;
+
+ std_name | std_percent
+----------+-------------
+    Kirti |          43
+      ram |          88
+     Monu |          81
+   Sanket |          98
+   Snehal |          78
+     Raju |          99
+    Pinki |          56
+    Mayur |          45
+
+
+cqlsh:birla> CREATE INDEX ON std(std_city);
+cqlsh:birla> select * from std where std_city = 'Mumbai' ;
+
+ std_id | std_city | std_name | std_percent | std_phone
+--------+----------+----------+-------------+------------
+      5 |   Mumbai |    Kirti |          43 | 4658585785
+      4 |   Mumbai |   Snehal |          78 | 8795857856
+
+
+
+cqlsh:birla> CREATE INDEX ON std(std_percent);
+cqlsh:birla> select * from std where std_percent = 98 ;
+
+ std_id | std_city | std_name | std_percent | std_phone
+--------+----------+----------+-------------+------------
+      2 |    Thane |   Sanket |          98 | 9892857856
+
+
+cqlsh:birla> select * from std where std_percent >= 60 allow filtering;
+
+ std_id | std_city  | std_name | std_percent | std_phone
+--------+-----------+----------+-------------+-------------
+      1 | Hyderabad |      ram |          88 | 77787857856
+      8 |     Surat |     Monu |          81 |   653585785
+      2 |     Thane |   Sanket |          98 |  9892857856
+      4 |    Mumbai |   Snehal |          78 |  8795857856
+      7 |    Kalyan |     Raju |          99 |   963585785
+
+
+cqlsh:birla> select * from std where std_percent <= 50 allow filtering;
+
+ std_id | std_city | std_name | std_percent | std_phone
+--------+----------+----------+-------------+------------
+      5 |   Mumbai |    Kirti |          43 | 4658585785
+      3 |    Thane |    Mayur |          45 | 8569857856
+
+
+
+__________________________________________________________________________________________
+
+update 
+
+
+cqlsh:birla>  UPDATE std SET std_city='Delhi' WHERE std_id=2;
+cqlsh:birla> select * from std;
+
+ std_id | std_city  | std_name | std_percent | std_phone
+--------+-----------+----------+-------------+-------------
+      5 |    Mumbai |    Kirti |          43 |  4658585785
+      1 | Hyderabad |      ram |          88 | 77787857856
+      8 |     Surat |     Monu |          81 |   653585785
+      2 |     Delhi |   Sanket |          98 |  9892857856
+      4 |    Mumbai |   Snehal |          78 |  8795857856
+      7 |    Kalyan |     Raju |          99 |   963585785
+      6 |      Pune |    Pinki |          56 |  7578585785
+      3 |     Thane |    Mayur |          45 |  8569857856
+
+
+
+cqlsh:birla> ALTER TABLE std ADD std_gen text;
+
+
+
+cqlsh:birla> select * from std;
+
+ std_id | std_city  | std_gen | std_name | std_percent | std_phone
+--------+-----------+---------+----------+-------------+-------------
+      5 |    Mumbai |    null |    Kirti |          43 |  4658585785
+      1 | Hyderabad |    null |      ram |          88 | 77787857856
+      8 |     Surat |    null |     Monu |          81 |   653585785
+      2 |     Delhi |    null |   Sanket |          98 |  9892857856
+      4 |    Mumbai |    null |   Snehal |          78 |  8795857856
+      7 |    Kalyan |    null |     Raju |          99 |   963585785
+      6 |      Pune |    null |    Pinki |          56 |  7578585785
+      3 |     Thane |    null |    Mayur |          45 |  8569857856
+
+
+
+
+cqlsh:birla> ALTER TABLE std RENAME std_id TO std_roll;
+cqlsh:birla> select * from std;
+
+ std_roll | std_city  | std_gen | std_name | std_percent | std_phone
+----------+-----------+---------+----------+-------------+-------------
+        5 |    Mumbai |    null |    Kirti |          43 |  4658585785
+        1 | Hyderabad |    null |      ram |          88 | 77787857856
+        8 |     Surat |    null |     Monu |          81 |   653585785
+        2 |     Delhi |    null |   Sanket |          98 |  9892857856
+        4 |    Mumbai |    null |   Snehal |          78 |  8795857856
+        7 |    Kalyan |    null |     Raju |          99 |   963585785
+        6 |      Pune |    null |    Pinki |          56 |  7578585785
+        3 |     Thane |    null |    Mayur |          45 |  8569857856
+
+
+_____________________________________________________________________________________
+
+cqlsh:birla>  ALTER TABLE std DROP std_gen;
+cqlsh:birla> select * from std;
+
+ std_roll | std_city  | std_name | std_percent | std_phone
+----------+-----------+----------+-------------+-------------
+        5 |    Mumbai |    Kirti |          43 |  4658585785
+        1 | Hyderabad |      ram |          88 | 77787857856
+        8 |     Surat |     Monu |          81 |   653585785
+        2 |     Delhi |   Sanket |          98 |  9892857856
+        4 |    Mumbai |   Snehal |          78 |  8795857856
+        7 |    Kalyan |     Raju |          99 |   963585785
+        6 |      Pune |    Pinki |          56 |  7578585785
+        3 |     Thane |    Mayur |          45 |  8569857856
+
+
+
+
+cqlsh:birla>  delete from std where std_roll=3;
+cqlsh:birla> select * from std;
+
+ std_roll | std_city  | std_name | std_percent | std_phone
+----------+-----------+----------+-------------+-------------
+        5 |    Mumbai |    Kirti |          43 |  4658585785
+        1 | Hyderabad |      ram |          88 | 77787857856
+        8 |     Surat |     Monu |          81 |   653585785
+        2 |     Delhi |   Sanket |          98 |  9892857856
+        4 |    Mumbai |   Snehal |          78 |  8795857856
+        7 |    Kalyan |     Raju |          99 |   963585785
+        6 |      Pune |    Pinki |          56 |  7578585785
+
+
+
+
+
+
+
+cqlsh:birla> DROP TABLE std;
+cqlsh:birla> desc tables;
+
+<empty>
+
+
+
+cqlsh:birla> DROP KEYSPACE birla;
+cqlsh:birla> desc keyspace;
+
+Keyspace 'birla' not found.
+
+cqlsh> desc keyspace;
+Not in any keyspace.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
