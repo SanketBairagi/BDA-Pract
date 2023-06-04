@@ -1,0 +1,9 @@
+Dr. Bhushan Jadhav11:42 AM
+https://www.oracle.com/in/java/technologies/downloads/#jdk20-windows
+
+Dr. Bhushan Jadhav11:47 AM
+https://github.com/steveloughran/winutils/blob/master/hadoop-2.7.1/bin/winutils.exe
+https://spark.apache.org/downloads.html
+
+Dr. Bhushan Jadhav12:05 PM
+https://towardsdatascience.com/machine-learning-at-scale-with-apache-spark-mllib-python-example-b32a9c74c610
